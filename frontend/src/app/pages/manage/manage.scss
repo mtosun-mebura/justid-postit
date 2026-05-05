@@ -1,0 +1,46 @@
+.intro {
+  margin: 0 0 16px;
+  max-width: 640px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.panel {
+  max-width: 560px;
+}
+
+.full {
+  width: 100%;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.color-swatch {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 8px;
+  vertical-align: middle;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline) 35%, transparent);
+}
+
+/* Opties in het panel: swatch + label op één regel */
+:host ::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
+  display: inline-flex;
+  align-items: center;
+}

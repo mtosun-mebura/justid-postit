@@ -1,0 +1,47 @@
+.top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 12px;
+  column-gap: 16px;
+  padding: 14px 20px 20px;
+  min-height: 80px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--mat-sys-outline);
+}
+
+.brand {
+  font-weight: 600;
+  margin-right: 0;
+  line-height: 1.4;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.spacer.small {
+  flex: 0 0 12px;
+}
+
+.open-count {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: nowrap;
+  padding: 4px 0;
+}
+
+.user-pick {
+  width: 220px;
+  margin: 0;
+  font-size: 14px;
+  /* Iets lucht rond het outline-veld t.o.v. buurknoppen en de onderrand. */
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+a.active {
+  background: color-mix(in srgb, var(--mat-sys-on-primary) 12%, transparent);
+}

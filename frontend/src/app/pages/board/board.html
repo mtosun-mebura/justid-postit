@@ -1,0 +1,78 @@
+<div class="board-page">
+  <h1 class="page-title">Bord</h1>
+  <p class="hint">
+    Sleep een kaart bij de titel of tekst
+  </p>
+
+  <div class="board-canvas">
+    @for (p of visibleItems(); track p.id) {
+    <mat-card class="post-it" cdkDrag [cdkDragBoundary]="'.board-canvas'" [style.left.px]="p.positionX"
+      [style.top.px]="p.positionY" [style.z-index]="p.zIndex" [style.background-color]="cardColor(p)"
+      (cdkDragStarted)="onDragStarted($event, p)" (cdkDragEnded)="onDragEnded($event, p)">
+      @if (p.completed) {
+      <span class="completed-badge" aria-hidden="true" matTooltip="Voltooid">
+        <mat-icon>check_circle</mat-icon>
+      </span>
+      }
+      <!-- Alleen dit gebied start slepen; knoppen onderaan zijn dan gewone klikken (CDK vangt ze anders af). -->
+      <div class="post-it-drag-handle" cdkDragHandle>
+        <mat-card-header>
+          <mat-card-title>{{ p.title }}</mat-card-title>
+          <mat-card-subtitle>
+            <p class="deadline">
+              @if (p.deadlineDate) {
+              Deadline: {{ p.deadlineDate }}
+              }
+            </p>
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="body-text">{{ p.description || '—' }}</p>
+          @if (p.tags) {
+          <p class="tags">{{ p.tags }}</p>
+          }
+        </mat-card-content>
+      </div>
+      <mat-card-actions align="end">
+        @if (!p.completed) {
+        <button
+          mat-icon-button
+          matTooltip="Voltooien"
+          type="button"
+          color="primary"
+          (click)="$event.stopPropagation(); complete(p)"
+        >
+          <mat-icon>task_alt</mat-icon>
+        </button>
+        }
+        <a
+          mat-icon-button
+          matTooltip="Bewerken"
+          [routerLink]="['/overview', p.id]"
+          [queryParams]="{ returnTo: 'board' }"
+          (click)="$event.stopPropagation()"
+        >
+          <mat-icon>edit</mat-icon>
+        </a>
+        <button
+          mat-icon-button
+          matTooltip="Archiveren"
+          type="button"
+          (click)="$event.stopPropagation(); archive(p)"
+        >
+          <mat-icon>archive</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          matTooltip="Verwijderen"
+          type="button"
+          color="warn"
+          (click)="$event.stopPropagation(); remove(p)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    }
+  </div>
+</div>

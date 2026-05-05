@@ -1,0 +1,83 @@
+.board-page {
+  margin: -16px;
+  padding: 16px;
+}
+
+.page-title {
+  margin: 0 0 8px;
+  font: var(--mat-sys-headline-small);
+}
+
+.hint {
+  margin: 0 0 16px;
+  max-width: 720px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.board-canvas {
+  position: relative;
+  min-height: calc(100vh - 200px);
+  border-radius: 12px;
+  background: linear-gradient(180deg,
+      color-mix(in srgb, var(--mat-sys-primary) 6%, var(--mat-sys-surface)) 0%,
+      var(--mat-sys-surface) 100%),
+    repeating-linear-gradient(0deg,
+      transparent,
+      transparent 31px,
+      color-mix(in srgb, var(--mat-sys-outline) 15%, transparent) 32px);
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline) 40%, transparent);
+  overflow: auto;
+}
+
+.post-it {
+  position: absolute;
+  width: min(280px, 85vw);
+  box-shadow: var(--mat-sys-level2);
+  --mat-card-elevated-container-color: transparent;
+  overflow: visible;
+}
+
+.post-it-drag-handle {
+  cursor: grab;
+}
+
+.post-it:active .post-it-drag-handle {
+  cursor: grabbing;
+}
+
+.completed-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  color: #2e7d32;
+  line-height: 0;
+  pointer-events: none;
+
+  mat-icon {
+    font-size: 28px;
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.post-it:active {
+  cursor: grabbing;
+}
+
+.body-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.tags {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-top: 8px;
+  font-style: italic;
+  color: rgb(97, 97, 97)
+}
+
+.deadline {
+  color: rgb(234, 93, 93);
+}

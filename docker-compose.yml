@@ -1,0 +1,14 @@
+# Lokale MySQL voor development; credentials matchen met backend/src/main/resources/application.yml
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: justid-postit-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: postit_db
+      MYSQL_USER: postit
+      MYSQL_PASSWORD: postit
+      MYSQL_ROOT_PASSWORD: rootlocal
+    ports:
+      - "3306:3306"
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]

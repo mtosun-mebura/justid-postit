@@ -1,0 +1,63 @@
+<h1>Post-it beheren</h1>
+<p class="intro">
+  Markeer als voltooid, archiveer of verwijder. Posities van het bord blijven behouden bij tekstwijzigingen.
+</p>
+
+@if (model(); as m) {
+<mat-card class="panel">
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Titel</mat-label>
+        <input matInput formControlName="title" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Omschrijving</mat-label>
+        <textarea matInput formControlName="description" rows="5"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Tags</mat-label>
+        <input matInput formControlName="tags" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Kleur</mat-label>
+        <mat-select formControlName="colorHex" [compareWith]="compareColorHex"
+          (selectionChange)="onColorHexChange($event)">
+          @for (opt of colorOptions; track opt.value) {
+          <mat-option [value]="opt.value">
+            <span class="color-swatch" [style.background-color]="opt.value"></span>
+            {{ opt.label }}
+          </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Deadline</mat-label>
+        <input matInput [matDatepicker]="dp" formControlName="deadline" />
+        <mat-datepicker-toggle matIconSuffix [for]="dp" />
+        <mat-datepicker #dp />
+      </mat-form-field>
+
+      <div class="checks">
+        <mat-checkbox formControlName="completed">Voltooid</mat-checkbox>
+      </div>
+
+      <div class="actions">
+        <button mat-stroked-button type="button" [routerLink]="cancelRoute()">Annuleren</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+          Opslaan
+        </button>
+        <button mat-raised-button type="button" (click)="toggleArchived(!m.archived)">
+          {{ m.archived ? 'Terug uit archief' : 'Archiveren' }}
+        </button>
+        <button mat-button color="warn" type="button" (click)="delete()">Verwijderen</button>
+        <a mat-button routerLink="/board">Naar bord</a>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
+}

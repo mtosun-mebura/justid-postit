@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: justid-postit-api
+  datasource:
+    url: jdbc:mysql://localhost:3306/postit_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Europe/Amsterdam&characterEncoding=UTF-8
+    username: postit
+    password: postit
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
+      # Bij herstart bestaat DB al: CREATE INDEX faalt dan dubbel — niet blokkeren (dev).
+      continue-on-error: true
+
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  cors:
+    allowed-origin-patterns: "http://localhost:*,http://127.0.0.1:*,http://[::1]:*,https://localhost:*,https://127.0.0.1:*"

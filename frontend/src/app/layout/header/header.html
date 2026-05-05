@@ -1,0 +1,22 @@
+<mat-toolbar color="primary" class="top-bar">
+  <span class="brand">Post-it bord</span>
+  <span class="spacer"></span>
+  <span class="open-count" data-testid="open-count"
+    >Aantal openstaande to-do’s: {{ openCount() }}</span
+  >
+  <span class="spacer small"></span>
+  <mat-form-field appearance="outline" class="user-pick" subscriptSizing="dynamic">
+    <mat-label>Gebruiker</mat-label>
+    <mat-select
+      [value]="userContext.selectedUserId()"
+      (selectionChange)="onUserChange($event.value)"
+    >
+      @for (u of users(); track u.id) {
+        <mat-option [value]="u.id">{{ u.displayName }} ({{ u.username }})</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <a mat-button routerLink="/board" routerLinkActive="active">Bord</a>
+  <a mat-button routerLink="/create" routerLinkActive="active">Toevoegen</a>
+  <a mat-button routerLink="/overview" routerLinkActive="active">Overzicht</a>
+</mat-toolbar>
