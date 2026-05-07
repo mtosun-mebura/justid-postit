@@ -12,12 +12,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyDouble;
@@ -183,5 +186,132 @@ class PostItServiceTest {
                 colorCaptor.capture()
         );
         assertThat(colorCaptor.getValue()).isEqualTo("#E1BEE7");
+    }
+
+    @Test
+    void createTrimsTitleBeforeInsert() {
+        when(postItJdbcRepository.insert(anyLong(), anyString(), anyString(), anyString(),
+                any(), anyDouble(), anyDouble(), anyInt(), anyString())).thenReturn(44L);
+        when(postItJdbcRepository.findById(44L)).thenReturn(Optional.of(sampleFromDb(44L, "#FFF59D")));
+
+        CreatePostItRequest req = new CreatePostItRequest(
+                1L,
+                "  Nieuwe taak  ",
+                "beschrijving",
+                "werk",
+                null,
+                12.0,
+                34.0,
+                1,
+                "#FFF59D"
+        );
+
+        postItService.create(req);
+
+        verify(postItJdbcRepository).insert(
+                eq(1L),
+                eq("Nieuwe taak"),
+                eq("beschrijving"),
+                eq("werk"),
+                any(),
+                eq(12.0),
+                eq(34.0),
+                eq(1),
+                eq("#FFF59D")
+        );
+    }
+
+    @Test
+    void getThrowsNotFoundWhenMissing() {
+        when(postItJdbcRepository.findById(123L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> postItService.get(123L))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                });
+    }
+
+    @Test
+    void replaceThrowsNotFoundWhenPostItDoesNotExist() {
+        when(postItJdbcRepository.findById(5L)).thenReturn(Optional.empty());
+        UpdatePostItRequest req = new UpdatePostItRequest(
+                "Titel",
+                "",
+                "",
+                null,
+                false,
+                false,
+                0,
+                0,
+                0,
+                "#FFF59D"
+        );
+
+        assertThatThrownBy(() -> postItService.replace(5L, req))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                });
+    }
+
+    @Test
+    void replaceThrowsNotFoundWhenUpdateReturnsFalse() {
+        when(postItJdbcRepository.findById(5L)).thenReturn(Optional.of(sampleFromDb(5L, "#FFF59D")));
+        when(postItJdbcRepository.update(
+                eq(5L),
+                anyString(),
+                anyString(),
+                anyString(),
+                any(),
+                anyBoolean(),
+                anyBoolean(),
+                anyDouble(),
+                anyDouble(),
+                anyInt(),
+                anyString()
+        )).thenReturn(false);
+        UpdatePostItRequest req = new UpdatePostItRequest(
+                "Titel",
+                "",
+                "",
+                null,
+                false,
+                false,
+                0,
+                0,
+                0,
+                "#FFF59D"
+        );
+
+        assertThatThrownBy(() -> postItService.replace(5L, req))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                });
+    }
+
+    @Test
+    void deleteCallsRepositoryWithId() {
+        when(postItJdbcRepository.delete(7L)).thenReturn(true);
+
+        postItService.delete(7L);
+
+        verify(postItJdbcRepository).delete(7L);
+    }
+
+    @Test
+    void deleteThrowsNotFoundWhenDeleteReturnsFalse() {
+        when(postItJdbcRepository.delete(7L)).thenReturn(false);
+
+        assertThatThrownBy(() -> postItService.delete(7L))
+                .isInstanceOf(ResponseStatusException.class)
+                .satisfies(ex -> {
+                    ResponseStatusException rse = (ResponseStatusException) ex;
+                    assertThat(rse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+                });
     }
 }
